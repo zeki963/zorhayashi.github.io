@@ -1,0 +1,86 @@
+// Button variants
+//
+// Easily pump out default styles, as well as :hover, :focus, :active,
+// and disabled options for all buttons
+
+@mixin button-variant($background, $border, $active-background: $background, $active-border: $border) {
+  color: $black;
+  border-color: $black;
+  //@include box-shadow($btn-box-shadow);
+  //@include dos-border(0, $background);
+
+  @include hover() {
+    color: $white;
+    border-color: $white;
+  }
+
+  &:focus,
+  &.focus {
+    color: $white;
+    border-color: $white;
+  }
+
+  // Disabled comes first so active can properly restyle
+  &.disabled,
+  &:disabled {
+    color: $grayDark;
+    background-color: $grayLight;
+    border-color: $border;
+  }
+
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active,
+  .show > &.dropdown-toggle {
+    color: color-yiq($active-background);
+    background-color: $active-background;
+    @if $enable-gradients {
+      background-image: none; // Remove the gradient for the pressed/active state
+    }
+
+  }
+}
+
+@mixin button-outline-variant($color, $color-hover: color-yiq($color), $active-background: $color, $active-border: $color) {
+  color: brighten($color);
+  border-color: brighten($color);
+  background: transparent;
+
+  @include dos-basic-border(brighten($color));
+  @include hover() {
+    color: $white;
+    background-color: $active-background;
+    border-color: $active-border;
+  }
+
+  &.disabled,
+  &:disabled {
+    color: $color;
+    background-color: transparent;
+  }
+
+  &:not(:disabled):not(.disabled):active,
+  &:not(:disabled):not(.disabled).active,
+  .show > &.dropdown-toggle {
+    color: color-yiq($active-background);
+    background-color: $active-background;
+    border-color: $active-border;
+
+    &:focus {
+      // Avoid using mixin so we can pass custom focus shadow properly
+      @if $enable-shadows and $btn-active-box-shadow != none {
+        box-shadow: $btn-active-box-shadow, 0 0 0 $btn-focus-width rgba($color, .5);
+      } @else {
+        box-shadow: 0 0 0 $btn-focus-width rgba($color, .5);
+      }
+    }
+  }
+}
+
+@mixin button-size($padding-y, $padding-x, $font-size, $line-height, $border-radius) {
+  padding: $padding-y $padding-x;
+  @include font-size($font-size);
+  line-height: $line-height;
+  // Manually declare to provide an override to the browser default
+  @include border-radius($border-radius, 0);
+}
+
